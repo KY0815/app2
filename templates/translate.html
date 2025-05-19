@@ -1,0 +1,34 @@
+{% extends 'base.html'%}
+
+{% block head %}
+<title>Translate!</title>
+{% endblock %}
+
+{% block body %}
+<body>
+    <head>Translate</head>
+    <p>{{trans.content}}</p>
+    <form action="/translate" method = "POST">
+        <input type="text" name = "user_trans" id = "user_trans" autocomplete="off">
+        <input type="hidden" name="trans_id" value="{{ trans.id }}">
+        <input type="submit" value = "Enter">
+    </form>
+    {% if submitted %}
+        {% if correct %}
+            <img class="small" src="{{ url_for('static', filename='images/test3.jpg') }}" alt="Correct!">
+            <p>{{trans.trans}}</p>
+            <form action="/translate" method="POST">
+                <input type="submit" name="next" value="Next">
+            </form>
+        {% else %}
+            <img class = "small" src="/static/images/test4.png" alt="Wrong!">
+            <p>{{trans.trans}}</p>
+            <form action="/translate" method="POST">
+                <input type="submit" name="next" value="Next">
+            </form>
+        {% endif %}
+    {% endif %}
+</body>
+<a href="/"><button>home</button></a>
+
+{% endblock %}

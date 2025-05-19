@@ -1,0 +1,21 @@
+{% extends 'base.html'%}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+<h1>TTT</h1>
+<a href="{{ url_for('translate') }}"><button>Translate</button></a>
+<a href="{{ url_for('vocab') }}"><button>Vocab</button></a>
+<a href="{{ url_for('grammar') }}"><button>Grammar</button></a>
+<a href="{{ url_for('insert') }}"><button>Add</button></a>
+<a href="{{ url_for('show') }}"><button>Show</button></a>
+<form action="{{ url_for('import_file') }}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" required>
+    <input type="submit" value="Upload">
+</form>
+
+
+{% endblock %}

@@ -1,0 +1,37 @@
+body {
+    background-color: aliceblue;
+    display:flex;
+    justify-content: center;
+    border: 4px solid black;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+table{
+    display: block;
+    background-color: rgb(175, 196, 224);
+    gap: 20px;
+    justify-content: center;
+}
+
+h1 {
+    color:white;
+    text-align: center;
+}
+
+.small{
+    scale: 0.5;
+}
+
+.fade-out{
+    opacity: 1;
+    transition: opacity 2s ease-out;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+

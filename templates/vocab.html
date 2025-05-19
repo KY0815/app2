@@ -1,0 +1,19 @@
+{% extends 'base.html'%}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+<body>
+    <head>Vocab</head>
+    <p>{{vocab.content}}</p>
+    <form action="vocab" method = "POST">
+        <input type="text" name = "user_trans" id = "user_trans">
+        <input type="submit" value = "Enter">
+    </form>
+</body>
+<a href="/"><button>home</button></a>
+
+
+{% endblock %}

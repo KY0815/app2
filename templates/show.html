@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+
+{% block head %}
+<Title>All Entries</Title>
+{% endblock %}
+
+{% block body %}
+{%if entries|length < 1 %}
+<h2>No entries available</h2>
+{% else %}
+<table>
+    <tr>
+        <th>Jp</th>
+        <th>En</th>
+        <th>type</th>
+        <th>Actions</th>
+    </tr>
+    {% for entry in entries %}
+        <tr>
+            <td>{{entry.content}}</td>
+            <td>{{entry.trans}}</td>
+            <td>{{entry.typ}}</td>
+            <td><a href="/delete/{{entry.id}}"> delete</a></td>
+        </tr>
+    {% endfor %}
+</table>
+<form action="{{ url_for('delete_all') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete all entries?');">
+    <button type="submit">Delete All Entries</button>
+</form>
+{% endif %}
+<a href="/"><button>home</button></a>
+{% endblock %}
