@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 
 {% block head %}
-
+<title>Vocab!</title>
 {% endblock %}
 
 {% block body %}
@@ -9,10 +9,27 @@
     <head>Vocab</head>
     <p>{{vocab.content}}</p>
     <form action="vocab" method = "POST">
-        <input type="text" name = "user_trans" id = "user_trans">
+        <input type="text" name = "user_trans" id = "user_trans" autocomplete="off">
+        <input type="hidden" name="vocab_id" value="{{ vocab.id }}">
         <input type="submit" value = "Enter">
     </form>
-</body>
+    {% if submitted %}
+        {% if correct %}
+            <p>{{vocab.trans}}</p>
+            <img class="small" src="/static/images/test3.jpg" alt="Correct!">
+            <form action="/vocab" method = "POST">
+                <input type="submit" name="next" value="Next">
+            </form>
+        {% else %}
+            <p>{{vocab.trans}}</p>
+            <img class="small" src="/static/images/test4.png" alt="Wrong!">
+            <form action="/vocab" method = "POST">
+                <input type="submit" name="next" value="Next">
+            </form>
+        {% endif %}
+    {% endif %}
+
+    </body>
 <a href="/"><button>home</button></a>
 
 

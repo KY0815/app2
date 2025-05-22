@@ -11,10 +11,11 @@ class entry(db.Model):
     id = db.Column(db.Integer,primary_key = True) # var name = db.Column(Content, modifications) primary_key is a unique identifier for a column
     content = db.Column(db.String(1000),nullable = False) # nullable means that it cannot be empty
     trans = db.Column(db.String(1000),nullable = False)
-    typ = db.Column(db.String(200),nullable = False )
+    typ = db.Column(db.String(200),nullable = False ) # we are gonna get rid of this later
 
     def __repr__(self):
         return '<Task %r>' %self.id
+
 
 @app.route('/', methods=['POST','GET'])
 def index():
@@ -30,10 +31,10 @@ def import_file():
         try:
             lines = uploaded_file.read().decode('utf-8').splitlines()
             for line in lines:
-                ls = [s.strip() for s in line.split(",")]
-                if len(ls) != 3:
+                ls = [s.strip('"') for s in line.split(",")]
+                if len(ls) != 3 or "type" in ls:
                     continue 
-                new_content = entry(content=ls[0], trans=ls[1], typ=ls[2])
+                new_content = entry(content=ls[0], trans=ls[1], typ=ls[2].lower())
                 db.session.add(new_content)
             db.session.commit()
             return redirect('/')
@@ -107,32 +108,45 @@ def translate():
         match_count = sum(1 for word in user_words if word in target_words)
         correct_percentage = (match_count/ len(target_words)) * 100
         
-        if correct_percentage >35:
+        if correct_percentage >25:
             correct = True
-        
+         #you need javascript to do the highlight correct words thing xdd
         return render_template('translate.html', trans=current_trans, correct=correct , submitted = submitted)
 
     random_trans = entry.query.filter_by(typ="translation").order_by(db.func.random()).first()
     return render_template('translate.html', trans=random_trans, correct=False ,submitted = False)
         
 
-@app.route('/grammar')
+@app.route('/grammar', methods = ['POST', 'GET'])
 def grammar():
     # give phrases, fix phrases or create phrases using grammar
     random_grammar = entry.query.filter_by(typ = "grammar").order_by(db.func.random()).first()
+
     try:
         return render_template('grammar.html', grammar = random_grammar)
     except:
         return "No grammar available"
     
 
-@app.route('/vocab')
+@app.route('/vocab', methods = ["POST", "GET"])
 def vocab():
     random_vocab = entry.query.filter_by(typ = "vocab").order_by(db.func.random()).first()
-    try:
-        return render_template('vocab.html', vocab = random_vocab)
-    except:
-        return "No vocab available"
+    correct = False
+    submitted = False
+
+    if request.method == "POST":
+        if 'next' in request.form:
+            random_vocab = entry.query.filter_by(typ = "vocab").order_by(db.func.random()).first()
+            return render_template('vocab.html', vocab = random_vocab, correct=False,submitted = False)
+        vocab_id = request.form["vocab_id"]
+        user_input = request.form["user_trans"]
+        submitted = True
+        current_vocab = entry.query.get(int(vocab_id))
+        if user_input in current_vocab.trans.strip().lower().split("/"):
+            correct = True
+        return render_template('vocab.html', vocab = current_vocab, correct = correct, submitted = True)
+ 
+    return render_template('vocab.html', vocab = random_vocab, correct=False, submitted = False)
 
 if __name__ == "__main__":
     with app.app_context():
